@@ -1008,7 +1008,7 @@ const TeacherPage = ({onUpdate, notify, apiBase}) => {
                       {STATUSES.map(s=>{
                         const cm={'Aprobada':'#16a34a','Rechazada':'#dc2626','Requiere Ajustes':'#ea580c','Pendiente':'#ca8a04'};
                         const active=sel.status===s;
-                        return <button key={s} onClick={()=>{onUpdate(sel.id,s,comment,sel);setSel(Object.assign({...sel},{status:s,comments:comment}));}}
+                        return <button key={s} onClick={()=>{onUpdate(sel.id,s,comment,sel,pwd);setSel(Object.assign({...sel},{status:s,comments:comment}));}}
                           style={{padding:'9px',borderRadius:10,border:`2px solid ${active?cm[s]:'#e5e7eb'}`,background:active?cm[s]:'white',color:active?'white':'#374151',fontSize:11,fontWeight:700,cursor:'pointer',fontFamily:'Inter,sans-serif',transition:'all 0.15s'}}>
                           {{'Aprobada':'✅','Rechazada':'❌','Requiere Ajustes':'🔄','Pendiente':'⏳'}[s]} {s}
                         </button>;
