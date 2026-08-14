@@ -1206,7 +1206,8 @@ const App = () => {
 
   /* Panel docente: actualizar estado */
   const handleUpdate = (id, status, comments, editedData, teacherPass) => {
-    const body = Object.assign({status,comentarios:comments}, editedData||{});
+    // editedData va primero para que status y comentarios (los correctos) no sean sobreescritos
+    const body = Object.assign({}, editedData||{}, {status, comentarios:comments});
     return fetch(API+'/api/docente/fotos/'+id, {
       method:'PATCH',
       headers:{'Content-Type':'application/json','x-teacher-password':teacherPass},
