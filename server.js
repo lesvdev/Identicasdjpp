@@ -15,7 +15,7 @@ const fs          = require('fs');
 const { v4: uuid } = require('uuid');
 
 const { fotos }         = require('./db');
-const { uploadToDrive } = require('./drive');
+const { uploadToDrive } = require('./cloudinary');
 
 /**
  * Convierte un registro de DB al formato que espera el frontend React.
