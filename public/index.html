@@ -35,6 +35,34 @@
     .clamp-2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
     .clamp-3{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
 
+    /* ── Responsive global ─────────────────────────────────────── */
+    /* Grid de 2 columnas → 1 columna en móvil */
+    @media(max-width:640px){
+      .grid-2col{grid-template-columns:1fr!important;}
+      .grid-4col{grid-template-columns:1fr 1fr!important;}
+      .grid-3col{grid-template-columns:1fr!important;}
+      /* Panel docente: lista + detalle en columna */
+      .teacher-layout{grid-template-columns:1fr!important;}
+      /* Formulario de postulación */
+      .submit-layout{grid-template-columns:1fr!important;}
+      /* Hero padding */
+      .hero-inner{padding:32px 16px!important;}
+      /* Galería filtros */
+      .gallery-filters{grid-template-columns:1fr 1fr!important;}
+      /* Footer */
+      .footer-grid{grid-template-columns:1fr!important;}
+      /* Ticker */
+      .ticker-extra{display:none!important;}
+      /* Toast centrado en móvil */
+      .toast-in{right:8px!important;left:8px!important;max-width:calc(100vw - 16px)!important;}
+      /* Panel docente: sticky → static en móvil */
+      .detail-sticky{position:static!important;top:auto!important;}
+    }
+    @media(max-width:480px){
+      .hide-mobile{display:none!important;}
+      .full-mobile{width:100%!important;box-sizing:border-box!important;}
+    }
+
     @keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
     @keyframes toastIn{from{opacity:0;transform:translateY(-10px);}to{opacity:1;transform:translateY(0);}}
     @keyframes toastOut{to{opacity:0;}}
@@ -250,9 +278,9 @@ const Header = ({page,go,pendingCount,onMock}) => {
       <div style={{background:VERDE_DARK,padding:'6px 24px',display:'flex',alignItems:'center',justifyContent:'space-between'}}>
         <div style={{display:'flex',alignItems:'center',gap:10}}>
           <span style={{background:ROJO,color:'white',fontSize:10,fontWeight:700,padding:'3px 10px',borderRadius:4,letterSpacing:'0.02em'}}>Proyecto interdisciplinar de historia, biodiversidad y cultura institucional.</span>
-          <span style={{color:'#a7f3d0',fontSize:12,fontWeight:500}}>Institución Educativa CASD-JPP - José Prudencio Padilla</span>
-          <span style={{color:'#6ee7b7',fontSize:12}}>·</span>
-          <span style={{color:'#6ee7b7',fontSize:12,fontWeight:600}}>Barrancabermeja</span>
+          <span className="ticker-extra" style={{color:'#a7f3d0',fontSize:12,fontWeight:500}}>Institución Educativa CASD-JPP - José Prudencio Padilla</span>
+          <span className="ticker-extra" style={{color:'#6ee7b7',fontSize:12}}>·</span>
+          <span className="ticker-extra" style={{color:'#6ee7b7',fontSize:12,fontWeight:600}}>Barrancabermeja</span>
         </div>
       </div>
 
@@ -306,7 +334,7 @@ const Header = ({page,go,pendingCount,onMock}) => {
 ════════════════════════════════════ */
 const SiteFooter = () => (
   <footer style={{background:VERDE_DARK}}>
-    <div style={{maxWidth:1280,margin:'0 auto',padding:'48px 24px',display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:48}}>
+    <div className="footer-grid" style={{maxWidth:1280,margin:'0 auto',padding:'48px 24px',display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:48}}>
       <div>
         <div style={{marginBottom:16}}>
           <span style={{fontFamily:"'Playfair Display',Georgia,serif",fontSize:22,fontWeight:700,fontStyle:'italic',color:'white'}}>Identi</span>
@@ -347,7 +375,7 @@ const HomePage = ({go,total,approved}) => (
     <div style={{padding:'32px 24px 0',maxWidth:1280,margin:'0 auto'}}>
       <div className="fadeUp" style={{
         background:`linear-gradient(160deg, #1a6b38 0%, #0f4d28 60%, #0a3d1e 100%)`,
-        borderRadius:24,padding:'64px 48px',textAlign:'center',position:'relative',overflow:'hidden'
+        borderRadius:24,padding:'clamp(28px,6vw,64px) clamp(16px,5vw,48px)',textAlign:'center',position:'relative',overflow:'hidden'
       }}>
         {/* subtle texture */}
         <div style={{position:'absolute',inset:0,opacity:0.05}}>
@@ -421,7 +449,7 @@ const HomePage = ({go,total,approved}) => (
         <h2 className="serif" style={{fontSize:'clamp(26px,4vw,38px)',fontWeight:800,color:VERDE_DARK,marginBottom:12}}>¿Por qué nace IdentiCASD-JPP?</h2>
         <p style={{color:'#666',fontSize:15}}>Transformando la percepción comunitaria para fortalecer la identidad y el tejido social del colegio.</p>
       </div>
-      <div style={{maxWidth:1100,margin:'0 auto',display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:20}}>
+      <div className="grid-3col" style={{maxWidth:1100,margin:'0 auto',display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:20}}>
         {[
           {bg:'#dcfce7',icon:'🌿',iconBg:'#d1fae5',title:'Identidad y Sentido',text:'La identidad institucional no es solo un conjunto de símbolos, sino el tejido vivo que nos une como familia CASD-JPP. Documentar la biodiversidad escolar conecta la ciencia con la empatía.'},
           {bg:'white',icon:'🎯',iconBg:'#fef3c7',title:'Desafíos Actuales',text:'El desconocimiento de la historia, el desinterés por los espacios verdes y el deterioro del entorno escolar nos impulsan a recondicionar nuestra cultura institucional mediante proyectos interactivos y significativos.'},
@@ -443,7 +471,7 @@ const HomePage = ({go,total,approved}) => (
           <h2 className="serif" style={{fontSize:'clamp(22px,3.5vw,34px)',fontWeight:800,color:VERDE_DARK,marginBottom:10}}>¿Cómo postular tu obra fotográfica?</h2>
         </div>
         <div style={{background:'white',borderRadius:20,padding:28,border:'1px solid #e5e7eb'}}>
-          <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:16}}>
+          <div className="grid-4col" style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:16}}>
             {[
               {num:'01',icon:'📖',title:'Explora y Observa',text:'Recorre las áreas verdes del CASD-JPP buscando flora, fauna o líquenes sin dañarlos.'},
               {num:'02',icon:'📷',title:'Captura la Foto',text:'Toma la foto en formato vertical u horizontal respetando la regla de oro.'},
@@ -535,7 +563,7 @@ const SubmitPage = ({onSubmit, notify}) => {
 
       {/* ── Content ── */}
       <div style={{maxWidth:1280,margin:'0 auto',padding:'28px 24px 48px'}}>
-        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:28,alignItems:'start'}}>
+        <div className="submit-layout" style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:28,alignItems:'start'}}>
 
           {/* ─ LEFT: Form ─ */}
           <form onSubmit={submit} style={{background:'white',borderRadius:20,padding:'28px 32px',boxShadow:'0 2px 16px rgba(0,0,0,0.05)'}}>
@@ -893,7 +921,7 @@ const TeacherPage = ({onUpdate, notify, apiBase}) => {
             }}>{s} ({count(s)})</button>;
           })}</div>
 
-        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:24,alignItems:'start'}}>
+        <div className="teacher-layout" style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:24,alignItems:'start'}}>
 
           {/* ─ List ─ */}
           <div style={{display:'flex',flexDirection:'column',gap:10}}>
@@ -919,7 +947,7 @@ const TeacherPage = ({onUpdate, notify, apiBase}) => {
 
           {/* ─ Detail Panel ─ */}
           {sel?(
-            <div style={{background:'white',borderRadius:20,boxShadow:'0 4px 20px rgba(0,0,0,0.07)',position:'sticky',top:20,alignSelf:'flex-start',overflow:'hidden'}}>
+            <div className="detail-sticky" style={{background:'white',borderRadius:20,boxShadow:'0 4px 20px rgba(0,0,0,0.07)',position:'sticky',top:20,alignSelf:'flex-start',overflow:'hidden'}}>
               {/* Panel header */}
               <div style={{background:VERDE_DARK,padding:'14px 20px',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
                 <span style={{color:'white',fontWeight:700,fontSize:14}}>Detalle de la Obra</span>
@@ -1097,7 +1125,7 @@ const GalleryPage = ({apiBase}) => {
         <p style={{color:'#888',fontSize:16,fontStyle:'italic',marginBottom:24}}>Obras de Arte de Biodiversidad</p>
 
         <div style={{background:'white',borderRadius:14,boxShadow:'0 2px 12px rgba(0,0,0,0.04)',padding:'16px 20px',marginBottom:24}}>
-          <div style={{display:'grid',gridTemplateColumns:'2fr 1fr 1fr 1fr',gap:10,marginBottom:10}}>
+          <div className="gallery-filters" style={{display:'grid',gridTemplateColumns:'2fr 1fr 1fr 1fr',gap:10,marginBottom:10}}>
             <input value={f.search} onChange={setFk('search')} placeholder="🔍 Buscar..." style={inp}/>
             <select value={f.category} onChange={setFk('category')} style={inp}>
               <option value="">Todas las categorías</option>{CATEGORIES.map(c=><option key={c} value={c}>{c}</option>)}
