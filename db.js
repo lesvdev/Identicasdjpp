@@ -1,91 +1,96 @@
 /**
- * db.js — Capa de base de datos SQLite para IdentiCASD-JPP
+ * db.js — Capa de base de datos MongoDB Atlas para IdentiCASD-JPP
  */
-const Database = require('better-sqlite3');
-const path = require('path');
+const { MongoClient } = require('mongodb');
 
-const DB_PATH = process.env.DB_PATH || path.join(__dirname, 'identicasd.db');
-const db = new Database(DB_PATH);
+const uri = process.env.MONGODB_URI || "mongodb+srv://luissuarezv_db_user:4IIFJJAmQHAJHmhT@cluster0.kzxbqw0.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
-// Activar WAL para mejor rendimiento con múltiples lecturas simultáneas
-db.pragma('journal_mode = WAL');
+let client = null;
+let db = null;
 
-// ── Crear tablas si no existen ───────────────────────────────────
-db.exec(`
-  CREATE TABLE IF NOT EXISTS fotos (
-    id          TEXT PRIMARY KEY,
-    nombre      TEXT NOT NULL,
-    grado       TEXT NOT NULL,
-    asignatura  TEXT NOT NULL,
-    fecha       TEXT NOT NULL,
-    categoria   TEXT NOT NULL,
-    descripcion TEXT,
-    filename    TEXT NOT NULL,
-    drive_id    TEXT,
-    drive_url   TEXT,
-    status      TEXT NOT NULL DEFAULT 'Pendiente',
-    comentarios TEXT DEFAULT '',
-    created_at  TEXT NOT NULL DEFAULT (datetime('now','localtime'))
-  );
-`);
-
-// ── Operaciones ──────────────────────────────────────────────────
+async function getCollection() {
+  if (!db) {
+    client = new MongoClient(uri);
+    await client.connect();
+    db = client.db('identicasd');
+    console.log('✅ Conectado exitosamente a MongoDB Atlas');
+  }
+  return db.collection('fotos');
+}
 
 const fotos = {
   /** Insertar una foto nueva */
-  insert(foto) {
-    const stmt = db.prepare(`
-      INSERT INTO fotos
-        (id, nombre, grado, asignatura, fecha, categoria, descripcion,
-         filename, drive_id, drive_url, status, comentarios)
-      VALUES
-        (@id, @nombre, @grado, @asignatura, @fecha, @categoria, @descripcion,
-         @filename, @drive_id, @drive_url, @status, @comentarios)
-    `);
-    stmt.run(foto);
-    return foto;
+  async insert(foto) {
+    const col = await getCollection();
+    const doc = {
+      id: foto.id,
+      name: foto.nombre,
+      grade: foto.grado,
+      subject: foto.asignatura,
+      date: foto.fecha,
+      category: foto.categoria,
+      description: foto.descripcion || '',
+      comments: foto.comentarios || '',
+      status: foto.status || 'Pendiente',
+      filename: foto.filename,
+      driveUrl: foto.drive_url || null,
+      image: foto.drive_url || `/api/fotos/${foto.id}/imagen`,
+      createdAt: new Date().toISOString()
+    };
+    await col.insertOne(doc);
+    return doc;
   },
 
   /** Obtener todas las fotos (panel docente) */
-  getAll() {
-    return db.prepare(`SELECT * FROM fotos ORDER BY created_at DESC`).all();
+  async getAll() {
+    const col = await getCollection();
+    return await col.find({}).sort({ createdAt: -1 }).toArray();
   },
 
   /** Obtener solo las aprobadas (galería pública) */
-  getApproved() {
-    return db.prepare(`
-      SELECT * FROM fotos WHERE status = 'Aprobada' ORDER BY created_at DESC
-    `).all();
+  async getApproved() {
+    const col = await getCollection();
+    return await col.find({ status: 'Aprobada' }).sort({ createdAt: -1 }).toArray();
   },
 
   /** Buscar por ID */
-  getById(id) {
-    return db.prepare(`SELECT * FROM fotos WHERE id = ?`).get(id);
+  async getById(id) {
+    const col = await getCollection();
+    return await col.findOne({ id: String(id) });
   },
 
   /** Actualizar estado, comentarios y/o datos editados */
-  update(id, fields) {
-    const allowed = ['status', 'comentarios', 'nombre', 'grado', 'asignatura',
-                     'fecha', 'categoria', 'descripcion', 'drive_id', 'drive_url'];
-    const sets = Object.keys(fields)
-      .filter(k => allowed.includes(k))
-      .map(k => `${k} = @${k}`)
-      .join(', ');
-    if (!sets) return null;
-    const stmt = db.prepare(`UPDATE fotos SET ${sets} WHERE id = @id`);
-    stmt.run({ ...fields, id });
-    return db.prepare(`SELECT * FROM fotos WHERE id = ?`).get(id);
+  async update(id, fields) {
+    const col = await getCollection();
+    const updateData = {};
+    if (fields.status !== undefined) updateData.status = fields.status;
+    if (fields.comentarios !== undefined) updateData.comments = fields.comentarios;
+    if (fields.comments !== undefined) updateData.comments = fields.comments;
+    if (fields.drive_url !== undefined) {
+      updateData.driveUrl = fields.drive_url;
+      updateData.image = fields.drive_url;
+    }
+    if (fields.nombre !== undefined) updateData.name = fields.nombre;
+    if (fields.grado !== undefined) updateData.grade = fields.grado;
+    if (fields.asignatura !== undefined) updateData.subject = fields.asignatura;
+    if (fields.categoria !== undefined) updateData.category = fields.categoria;
+    if (fields.descripcion !== undefined) updateData.description = fields.descripcion;
+
+    await col.updateOne({ id: String(id) }, { $set: updateData });
+    return await col.findOne({ id: String(id) });
   },
 
   /** Eliminar */
-  delete(id) {
-    return db.prepare(`DELETE FROM fotos WHERE id = ?`).run(id);
+  async delete(id) {
+    const col = await getCollection();
+    return await col.deleteOne({ id: String(id) });
   },
 
   /** Contar fotos pendientes */
-  countPending() {
-    return db.prepare(`SELECT COUNT(*) as n FROM fotos WHERE status = 'Pendiente'`).get().n;
+  async countPending() {
+    const col = await getCollection();
+    return await col.countDocuments({ status: 'Pendiente' });
   },
 };
 
-module.exports = { db, fotos };
+module.exports = { fotos };
