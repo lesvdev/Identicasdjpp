@@ -267,15 +267,15 @@ app.delete('/api/docente/fotos/:id', teacherAuth, (req, res) => {
  * GET /api/docente/stats
  * Estadísticas rápidas para el panel.
  */
-app.get('/api/docente/stats', teacherAuth, (req, res) => {
-  const all = fotos.getAll();
-  const byStatus = {};
-  const byCat    = {};
-  for (const f of all) {
-    byStatus[f.status] = (byStatus[f.status] || 0) + 1;
-    byCat[f.categoria] = (byCat[f.categoria]  || 0) + 1;
+app.get('/api/fotos/:id/imagen', async (req, res) => {
+  const foto = await fotos.getById(req.params.id);
+  if (!foto) return res.status(404).json({ error: 'No encontrada' });
+  if (foto.driveUrl) {
+    return res.redirect(foto.driveUrl);
   }
-  res.json({ total: all.length, byStatus, byCat, pendientes: fotos.countPending() });
+  const file = path.join(UPLOADS_DIR, foto.filename);
+  if (!fs.existsSync(file)) return res.status(404).json({ error: 'Archivo no encontrado' });
+  res.sendFile(file);
 });
 
 // ── Catch-all: devolver el frontend para rutas no-API ─────────────
