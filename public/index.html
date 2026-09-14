@@ -949,14 +949,47 @@ const TeacherPage = ({onUpdate, notify, apiBase}) => {
           {/* ─ Detail Panel ─ */}
           {sel?(
             <div className="detail-sticky" style={{background:'white',borderRadius:20,boxShadow:'0 4px 20px rgba(0,0,0,0.07)',position:'sticky',top:20,alignSelf:'flex-start',overflow:'hidden'}}>
-              {/* Panel header */}
+             {/* Panel header */}
               <div style={{background:VERDE_DARK,padding:'14px 20px',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
                 <span style={{color:'white',fontWeight:700,fontSize:14}}>Detalle de la Obra</span>
                 <div style={{display:'flex',gap:8,alignItems:'center'}}>
+                  
+                  {/* ⭐ BOTÓN DE ESTRELLA */}
+                  <button 
+                    onClick={async () => {
+                      const nuevoEstado = !sel.isWinner;
+                      const res = await onUpdate(sel.id, sel.status, sel.comments || '', { isWinner: nuevoEstado }, pwd);
+                      if (res) {
+                        setSel(prev => ({ ...prev, isWinner: nuevoEstado }));
+                        setSubs(prev => prev.map(item => item.id === sel.id ? { ...item, isWinner: nuevoEstado } : item));
+                        notify(nuevoEstado ? '⭐ Marcada como Obra Ganadora' : 'Estrella removida', 'success');
+                      }
+                    }}
+                    title={sel.isWinner ? "Quitar distinción de Ganadora" : "Marcar como Obra Ganadora"}
+                    style={{
+                      background: sel.isWinner ? '#fef3c7' : 'rgba(255,255,255,0.15)',
+                      color: sel.isWinner ? '#92400e' : 'white',
+                      border: sel.isWinner ? '1.5px solid #f59e0b' : 'none',
+                      borderRadius: 7,
+                      padding: '5px 12px',
+                      fontSize: 11,
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      fontFamily: 'Inter,sans-serif',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 5
+                    }}>
+                    {sel.isWinner ? '⭐ Ganadora' : '☆ Marcar Ganadora'}
+                  </button>
+
+                  {/* Botón Editar Datos */}
                   <button onClick={()=>{setEditing(v=>!v);setEditData({...sel});}}
                     style={{background:editing?'#fef3c7':'rgba(255,255,255,0.15)',color:editing?'#92400e':'white',border:'none',borderRadius:7,padding:'5px 12px',fontSize:11,fontWeight:700,cursor:'pointer',fontFamily:'Inter,sans-serif'}}>
                     {editing?'👁 Ver Marco':'✏️ Editar Datos'}
                   </button>
+                  
+                  {/* Botón Cerrar */}
                   <button onClick={()=>setSel(null)} style={{background:'none',border:'none',color:'rgba(255,255,255,0.7)',fontSize:18,cursor:'pointer'}}>✕</button>
                 </div>
               </div>
@@ -1024,38 +1057,7 @@ const TeacherPage = ({onUpdate, notify, apiBase}) => {
                         ⬇️ Descargar postal A5 (PDF)
                       </button>
                     </div>
-
-                    {/* ⭐ BOTÓN DE ESTRELLA / GANADORA (INSERTAR AQUÍ) */}
-                    <div style={{marginBottom:16}}>
-                      <button 
-                        onClick={async () => {
-                          const nuevoEstado = !sel.isWinner;
-                          const res = await onUpdate(sel.id, { isWinner: nuevoEstado });
-                          if (res) {
-                            setSel(prev => ({ ...prev, isWinner: nuevoEstado }));
-                            setSubs(prev => prev.map(item => item.id === sel.id ? { ...item, isWinner: nuevoEstado } : item));
-                            notify(nuevoEstado ? '⭐ Marcada como Ganadora' : 'Estrella removida', 'success');
-                          }
-                        }}
-                        style={{
-                          width:'100%',
-                          padding:'10px 14px',
-                          background: sel.isWinner ? '#fef3c7' : '#f9fafb',
-                          color: sel.isWinner ? '#b45309' : '#4b5563',
-                          border: sel.isWinner ? '2px solid #f59e0b' : '2px solid #e5e7eb',
-                          borderRadius:10,
-                          fontSize:12,
-                          fontWeight:700,
-                          cursor:'pointer',
-                          display:'flex',
-                          alignItems:'center',
-                          justifyContent:'center',
-                          gap:8,
-                          transition:'all 0.2s'
-                        }}>
-                        {sel.isWinner ? '⭐ Obra Ganadora Institucional (Activa)' : '☆ Marcar como Obra Ganadora'}
-                      </button>
-                    </div>
+                    
                     {/* Observations */}
                     <div style={{marginBottom:12}}>
                       <label style={{display:'block',fontSize:11,fontWeight:700,color:'#6b7280',textTransform:'uppercase',letterSpacing:'0.05em',marginBottom:6}}>Observaciones</label>
