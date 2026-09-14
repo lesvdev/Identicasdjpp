@@ -1195,12 +1195,20 @@ const TeacherPage = ({onUpdate, notify, apiBase}) => {
 const GalleryModal = ({sub,onClose}) => {
   if(!sub) return null;
   return (
-    <div style={{position:'fixed',inset:0,zIndex:100,background:'rgba(0,0,0,0.88)',display:'flex',alignItems:'center',justifyContent:'center',padding:16}} onClick={onClose}>
-      <div style={{maxWidth:480,width:'100%',position:'relative'}} onClick={e=>e.stopPropagation()}>
-        <button onClick={onClose} style={{position:'absolute',top:-38,right:0,background:'none',border:'none',color:'white',fontSize:24,cursor:'pointer'}}>✕</button>
-        <Frame sub={sub}/>
+    <div style={{position:'fixed',inset:0,zIndex:100,background:'rgba(0,0,0,0.92)',display:'flex',alignItems:'center',justifyContent:'center',padding:12,overflowY:'auto'}} onClick={onClose}>
+      <div style={{maxWidth:480,width:'100%',maxHeight:'94vh',position:'relative',display:'flex',flexDirection:'column'}} onClick={e=>e.stopPropagation()}>
+        
+        {/* Botón cerrar visible y accesible */}
+        <div style={{display:'flex',justifyContent:'flex-end',marginBottom:6}}>
+          <button onClick={onClose} style={{background:'rgba(255,255,255,0.2)',border:'none',color:'white',fontSize:18,fontWeight:700,width:36,height:36,borderRadius:18,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center'}}>✕</button>
+        </div>
+
+        <div style={{overflowY:'auto',borderRadius:6}}>
+          <Frame sub={sub}/>
+        </div>
+
         <div style={{display:'flex',gap:10,marginTop:12}}>
-          <button onClick={()=>downloadFrame(sub)} className="btn-red" style={{flex:1,padding:'12px',borderRadius:12,fontSize:13,border:'none',cursor:'pointer',fontFamily:'Inter,sans-serif',fontWeight:600}}>⬇️ Descargar postal A5</button>
+          <button onClick={()=>downloadFrame(sub)} className="btn-red" style={{flex:1,padding:'12px',borderRadius:12,fontSize:13,border:'none',cursor:'pointer',fontFamily:'Inter,sans-serif',fontWeight:700}}>⬇️ Descargar postal A5</button>
           <button onClick={onClose} style={{padding:'12px 18px',background:'white',border:'none',borderRadius:12,fontSize:13,fontWeight:600,cursor:'pointer',fontFamily:'Inter,sans-serif',color:'#374151'}}>Cerrar</button>
         </div>
       </div>
