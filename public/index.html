@@ -147,6 +147,34 @@
     .card-shadow:hover{box-shadow:0 4px 20px rgba(10,126,70,0.15);transform:translateY(-2px);}
     
     /* Nav buttons */
+  /* Navegación Móvil vs Computador (CSS Nativo) */
+    .nav-desktop {
+      display: none !important;
+    }
+    .nav-mobile-btn {
+      display: flex !important;
+    }
+    .nav-mobile-drawer {
+      display: block !important;
+    }
+    .hide-on-mobile {
+      display: none !important;
+    }
+
+    @media (min-width: 769px) {
+      .nav-desktop {
+        display: flex !important;
+      }
+      .nav-mobile-btn {
+        display: none !important;
+      }
+      .nav-mobile-drawer {
+        display: none !important;
+      }
+      .hide-on-mobile {
+        display: block !important;
+      }
+    }
     .nav-active{background:#0A7E46!important;color:white!important;}
     .nav-item{transition:all 0.2s;border:none;cursor:pointer;font-family:'Inter',sans-serif;font-weight:600;background:transparent;min-height:44px;}
     .nav-item:hover:not(.nav-active){background:#f0fdf4;color:#0A7E46;}
@@ -362,19 +390,19 @@ const Header = ({page,go,pendingCount,onMock}) => {
       {/* Main header */}
       <div style={{maxWidth:1280,margin:'0 auto',padding:'10px 16px',display:'flex',alignItems:'center',justifyContent:'space-between',gap:12}}>
         {/* Logo */}
-        <div style={{cursor:'pointer'}} onClick={()=>go('home')}>
-          <div style={{display:'flex',alignItems:'center',gap:8}}>
-            <span style={{fontFamily:"'Playfair Display',Georgia,serif",fontSize:22,fontWeight:700,fontStyle:'italic',color:VERDE_DARK}}>Identi</span>
-            <span style={{fontFamily:"'Playfair Display',Georgia,serif",fontSize:22,fontWeight:800,color:VERDE_DARK}}>CASD-JPP</span>
-            <span style={{border:`1.5px solid ${VERDE}`,color:VERDE,fontSize:10,fontWeight:700,padding:'1px 8px',borderRadius:20}}>Biodiversidad</span>
+        <div style={{cursor:'pointer',flexShrink:0}} onClick={()=>go('home')}>
+          <div style={{display:'flex',alignItems:'center',gap:6,flexWrap:'nowrap'}}>
+            <span style={{fontFamily:"'Playfair Display',Georgia,serif",fontSize:20,fontWeight:700,fontStyle:'italic',color:VERDE_DARK}}>Identi</span>
+            <span style={{fontFamily:"'Playfair Display',Georgia,serif",fontSize:20,fontWeight:800,color:VERDE_DARK}}>CASD-JPP</span>
+            <span style={{border:`1.5px solid ${VERDE}`,color:VERDE,fontSize:9,fontWeight:700,padding:'1px 6px',borderRadius:20,whiteSpace:'nowrap'}}>Biodiversidad</span>
           </div>
-          <p className="hidden sm:block" style={{color:'#666',fontSize:11,fontStyle:'italic',marginTop:2}}>
+          <p className="hide-on-mobile" style={{color:'#666',fontSize:11,fontStyle:'italic',marginTop:2}}>
             "De la historia a la identidad, construyendo cultura institucional"
           </p>
         </div>
 
-        {/* Desktop nav */}
-        <nav className="hidden md:flex" style={{gap:4,alignItems:'center'}}>
+        {/* Desktop nav (se oculta automáticamente en celular) */}
+        <nav className="nav-desktop" style={{gap:4,alignItems:'center'}}>
           {nav.map(n=>(
             <button key={n.id} onClick={()=>go(n.id)}
               className={`nav-item ${page===n.id?'nav-active':''}`}
@@ -385,17 +413,17 @@ const Header = ({page,go,pendingCount,onMock}) => {
           ))}
         </nav>
 
-        {/* Mobile menu button (44px touch target) */}
-        <button onClick={()=>setOpen(o=>!o)} className="md:hidden" 
+        {/* Mobile menu button (solo se muestra en celular) */}
+        <button onClick={()=>setOpen(o=>!o)} className="nav-mobile-btn" 
           aria-label="Menú"
-          style={{background:'#f3f4f6',border:'none',fontSize:20,cursor:'pointer',width:44,height:44,borderRadius:10,display:'flex',alignItems:'center',justifyContent:'center',color:'#1f2937'}}>
+          style={{background:'#f3f4f6',border:'none',fontSize:22,cursor:'pointer',width:44,height:44,borderRadius:10,alignItems:'center',justifyContent:'center',color:'#1f2937'}}>
           {open?'✕':'☰'}
         </button>
       </div>
 
-      {/* Mobile drawer */}
+      {/* Mobile drawer (menú desplegable al tocar ☰) */}
       {open&&(
-        <div className="md:hidden" style={{borderTop:'1px solid #e5e7eb',padding:'8px 12px',background:'white',boxShadow:'0 8px 16px rgba(0,0,0,0.06)'}}>
+        <div className="nav-mobile-drawer" style={{borderTop:'1px solid #e5e7eb',padding:'8px 12px',background:'white',boxShadow:'0 8px 16px rgba(0,0,0,0.06)'}}>
           {nav.map(n=>(
             <button key={n.id} onClick={()=>{go(n.id);setOpen(false);}}
               className={`nav-item ${page===n.id?'nav-active':''}`}
