@@ -236,7 +236,9 @@ app.patch('/api/docente/fotos/:id', teacherAuth, async (req, res) => {
   try {
     const map = { name:'nombre', grade:'grado', subject:'asignatura',
                   date:'fecha', category:'categoria', description:'descripcion',
-                  comments:'comentarios', status:'status', comentarios:'comentarios' };
+                  comments:'comentarios', status:'status', comentarios:'comentarios',
+                  isWinner:'isWinner', is_winner:'isWinner'
+                };
     const fields = {};
     for (const [fk, dk] of Object.entries(map)) {
       if (req.body[fk] !== undefined) fields[dk] = req.body[fk];
