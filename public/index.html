@@ -1108,12 +1108,33 @@ const GalleryPage = ({apiBase}) => {
       .catch(()=>setLoading(false));
   },[]);
 
-  const shown=fotos.filter(s=>{
-    if(f.category&&s.categoria!==f.category)return false;
-    if(f.grade&&s.grado!==f.grade)return false;
-    if(f.subject&&s.asignatura!==f.subject)return false;
-    if(f.search&&!s.nombre.toLowerCase().includes(f.search.toLowerCase())&&!(s.descripcion||'').toLowerCase().includes(f.search.toLowerCase()))return false;
+const shown = fotos.filter(s => {
+    // Soporta tanto las propiedades en inglés como en español
+    const categoria   = s.category || s.categoria || '';
+    const grado       = s.grade || s.grado || '';
+    const asignatura  = s.subject || s.asignatura || '';
+    const nombre      = s.name || s.nombre || '';
+    const descripcion = s.description || s.descripcion || '';
+
+    // Filtro por Categoría
+    if (f.category && categoria !== f.category) return false;
+
+    // Filtro por Grado
+    if (f.grade && grado !== f.grade) return false;
+
+    // Filtro por Asignatura
+    if (f.subject && asignatura !== f.subject) return false;
+
+    // Búsqueda por texto (Nombre del autor o Descripción)
+    if (f.search) {
+      const q = f.search.toLowerCase();
+      const coincideNombre = nombre.toLowerCase().includes(q);
+      const coincideDesc   = descripcion.toLowerCase().includes(q);
+      if (!coincideNombre && !coincideDesc) return false;
+    }
+
     return true;
+  });
   });
   const hasF=Object.values(f).some(v=>v);
   const inp={border:'2px solid #e5e7eb',borderRadius:10,padding:'9px 13px',fontSize:13,fontFamily:'Inter,sans-serif',outline:'none',background:'white',width:'100%',boxSizing:'border-box'};
