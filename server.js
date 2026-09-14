@@ -28,6 +28,7 @@ function fotoPublic(f) {
     description: f.description || f.descripcion,
     comments:    f.comments || f.comentarios || '',
     status:      f.status,
+    isWinner:    Boolean(f.isWinner || f.is_winner || false),
     image:       f.driveUrl || f.image || `/api/fotos/${f.id}/imagen`,
     driveUrl:    f.driveUrl || f.drive_url || null,
     createdAt:   f.createdAt || f.created_at,
