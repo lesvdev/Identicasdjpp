@@ -32,6 +32,7 @@ const fotos = {
       description: foto.descripcion || '',
       comments: foto.comentarios || '',
       status: foto.status || 'Pendiente',
+      isWinner: Boolean(foto.isWinner || foto.is_winner || false),
       filename: foto.filename,
       driveUrl: foto.drive_url || null,
       image: foto.drive_url || `/api/fotos/${foto.id}/imagen`,
@@ -66,6 +67,8 @@ const fotos = {
     if (fields.status !== undefined) updateData.status = fields.status;
     if (fields.comentarios !== undefined) updateData.comments = fields.comentarios;
     if (fields.comments !== undefined) updateData.comments = fields.comments;
+    if (fields.isWinner !== undefined) updateData.isWinner = Boolean(fields.isWinner);
+    if (fields.is_winner !== undefined) updateData.isWinner = Boolean(fields.is_winner);
     if (fields.drive_url !== undefined) {
       updateData.driveUrl = fields.drive_url;
       updateData.image = fields.drive_url;
