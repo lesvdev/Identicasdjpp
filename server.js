@@ -167,10 +167,15 @@ app.post('/api/fotos', uploadLimit, upload.single('imagen'), async (req, res) =>
 // GET /api/fotos (Galería pública)
 app.get('/api/fotos', async (req, res) => {
   try {
-    const { categoria, grado } = req.query;
+    const { categoria, grado, category, grade } = req.query;
     let lista = await fotos.getApproved();
-    if (categoria) lista = lista.filter(f => (f.category || f.categoria) === categoria);
-    if (grado)     lista = lista.filter(f => (f.grade || f.grado) === grado);
+
+    const cat = categoria || category;
+    const grd = grado || grade;
+
+    if (cat) lista = lista.filter(f => (f.category || f.categoria) === cat);
+    if (grd) lista = lista.filter(f => (f.grade || f.grado) === grd);
+
     res.json({ fotos: lista.map(fotoPublic), total: lista.length });
   } catch (err) {
     console.error('[GET /api/fotos]', err);
